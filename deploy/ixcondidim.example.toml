@@ -1,0 +1,35 @@
+[server]
+listen = "unix:/run/ixcondidim/ixcondidim.sock"
+# listen = "inet:127.0.0.1:8898"
+
+[storage]
+# Chaves privadas dos usuários locais (permissão estrita 0700)
+keys_dir = "/var/lib/ixcondidim/keys"
+# Cache de contatos e chaves públicas de pares
+peers_dir = "/var/lib/ixcondidim/peers"
+
+[default]
+# "mutual" (solicita criptografia mútua) ou "nopreference"
+prefer_encrypt = "mutual"
+auto_generate_keys = true
+auto_add_header = true
+auto_collect_peers = true
+
+# Modos: "opportunistic" (cifra se o destinatário tiver chave),
+# "header_only" (apenas injeta o cabeçalho) ou "disabled"
+encryption_mode = "opportunistic"
+
+# Decifra mensagens recebidas no servidor e anexa banner legível
+decrypt_incoming = true
+
+# Palavra secreta exibida no banner de mensagens decifradas para prevenir spoofing
+security_word = "EscondidinhoPraiano"
+
+[domains."kiridu.net"]
+prefer_encrypt = "mutual"
+security_word = "KiriduPrivacidade"
+
+[senders."diretoria@kiridu.net"]
+prefer_encrypt = "mutual"
+encryption_mode = "opportunistic"
+security_word = "DiretoriaSegredoMaximo"

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="terracotta" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e07a5f"/>
+      <stop offset="100%" stop-color="#c85a3b"/>
+    </linearGradient>
+    <linearGradient id="cream" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff1c5"/>
+      <stop offset="100%" stop-color="#ffd56b"/>
+    </linearGradient>
+    <linearGradient id="steam" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#a7d7c5" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#84bc9c" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <!-- Fundo suave pastel -->
+  <circle cx="32" cy="32" r="30" fill="#fdf8f0"/>
+  <!-- Vapor em forma de fechadura -->
+  <path d="M 32 10 C 27 10 23 14 23 19 C 23 23 26 26 28 27 L 27 34 L 37 34 L 36 27 C 38 26 41 23 41 19 C 41 14 37 10 32 10 Z" fill="url(#steam)"/>
+  <!-- Chavezinha dentro do vapor -->
+  <circle cx="32" cy="18" r="3" fill="#6ba583"/>
+  <rect x="31" y="19" width="2" height="6" fill="#6ba583"/>
+  <rect x="31" y="22" width="4" height="1.5" fill="#6ba583"/>
+  <!-- Panela de barro -->
+  <ellipse cx="32" cy="38" rx="20" ry="7" fill="url(#cream)"/>
+  <path d="M 12 38 C 12 50 18 55 32 55 C 46 55 52 50 52 38 Z" fill="url(#terracotta)"/>
+  <!-- Alças da panela -->
+  <path d="M 12 40 C 8 40 8 46 12 46" stroke="#c85a3b" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 52 40 C 56 40 56 46 52 46" stroke="#c85a3b" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

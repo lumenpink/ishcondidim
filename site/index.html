@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ixcondidim — Filtro Milter Postfix Autocrypt L1 em Rust</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="logo-wrapper">
+        <img src="/assets/logo.jpg" alt="Ixcondidim Logo" class="logo-img">
+      </div>
+      <h1>Ixcondidim</h1>
+      <p class="tagline">Sabor caseiro, privacidade descomplicada e zero atrito no seu Postfix.</p>
+
+      <div class="badges">
+        <span class="badge badge-terracotta">🦀 Rust 100% Puro</span>
+        <span class="badge badge-mint">🔐 Autocrypt Level 1</span>
+        <span class="badge badge-ocean">⚡ Ed25519 & X25519</span>
+        <a href="https://codeberg.org/lumenpink/ixcondidim" class="badge badge-ocean" target="_blank" rel="noopener">📦 Codeberg Repo</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>🍲 O que é o Ixcondidim?</h2>
+      <p>
+        O <strong>Ixcondidim</strong> é um filtro Milter de alta performance para <strong>Postfix</strong> que implementa a especificação aberta <strong>Autocrypt Level 1</strong> de forma 100% server-side.
+      </p>
+      <p>
+        Ele elimina a dor de cabeça do PGP tradicional: os usuários da sua empresa ou homelab enviam e-mails normalmente a partir de qualquer cliente (iPhone, Android, Thunderbird, Webmail) e o servidor cuida de gerar chaves modernas, injetar cabeçalhos e cifrar e-mails sozinho!
+      </p>
+
+      <div class="grid-features">
+        <div class="feature-box">
+          <div class="feature-icon">✨</div>
+          <strong>Chaves On-The-Fly</strong>
+          <p>Gera automaticamente pares modernos Ed25519 + X25519 para cada conta gerenciada.</p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">🤝</div>
+          <strong>Cifragem Oportunística</strong>
+          <p>Cifra em PGP/MIME automaticamente quando os destinatários possuem suporte ativo.</p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">🔄</div>
+          <strong>Prevenção de Lockout</strong>
+          <p>Se o contato responder de um cliente sem PGP, o Ixcondidim volta para texto claro sem travar a conversa.</p>
+        </div>
+        <div class="feature-box">
+          <div class="feature-icon">🛡️</div>
+          <strong>Palavra de Segurança</strong>
+          <p>Selo anti-phishing oficial no topo de e-mails decifrados, impossível de ser forjado.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>📬 Exemplo do Banner com Palavra de Segurança</h2>
+      <p>
+        Ao receber um e-mail cifrado em PGP/MIME, o Ixcondidim decifra a mensagem para que ela seja lida em qualquer Webmail ou aplicativo, estampando a palavra secreta combinada na configuração:
+      </p>
+
+      <div class="banner-demo">
+        <div style="font-weight: bold; margin-bottom: 6px;">🔒 [Ixcondidim: Mensagem PGP Decifrada pelo Servidor]</div>
+        <div>Palavra Secreta de Validação: <span class="secret-badge">[EscondidinhoPraiano]</span></div>
+        <div>Remetente: <code>amigo@quiosque.net</code></div>
+        <div>Assinatura Digital: <strong style="color: #059669;">✓ VÁLIDA (Assinatura confirmada)</strong></div>
+        <div>ID da Chave: <code>4f8a91c23da75b10</code> (Ed25519)</div>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--text-muted);">
+        <em>* Tentativas de simulação desse banner por mensagens de spam ou phishing em texto claro são desarmadas automaticamente pelo motor de sanitização anti-spoofing.</em>
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>🚀 Instalação Rápida no Postfix</h2>
+
+      <h3>1. Compile e instale o binário:</h3>
+      <pre><code>git clone https://codeberg.org/lumenpink/ixcondidim.git
+cd ixcondidim
+cargo build --release
+sudo cp target/release/ixcondidim /usr/local/bin/</code></pre>
+
+      <h3>2. Instale o serviço Systemd e configuração:</h3>
+      <pre><code>sudo mkdir -p /etc/ixcondidim /var/lib/ixcondidim/keys /var/lib/ixcondidim/peers /run/ixcondidim
+sudo cp deploy/ixcondidim.example.toml /etc/ixcondidim/ixcondidim.toml
+sudo cp deploy/ixcondidim.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now ixcondidim</code></pre>
+
+      <h3>3. Plugue no Postfix (<code>/etc/postfix/main.cf</code>):</h3>
+      <pre><code># Integração de Milters (Ordem: Papéli -> Ixcondidim -> OpenDKIM)
+smtpd_milters = unix:/run/papeli/papeli.sock, unix:/run/ixcondidim/ixcondidim.sock, unix:/run/opendkim/opendkim.sock
+non_smtpd_milters = $smtpd_milters
+
+milter_default_action = accept
+milter_protocol = 6</code></pre>
+
+      <h3>4. Reinicie o Postfix:</h3>
+      <pre><code>sudo systemctl restart postfix</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>⚙️ Exemplo de Configuração (<code>ixcondidim.toml</code>)</h2>
+      <pre><code>[server]
+listen = "unix:/run/ixcondidim/ixcondidim.sock"
+
+[storage]
+keys_dir = "/var/lib/ixcondidim/keys"
+peers_dir = "/var/lib/ixcondidim/peers"
+
+[default]
+prefer_encrypt = "mutual"
+auto_generate_keys = true
+auto_add_header = true
+auto_collect_peers = true
+encryption_mode = "opportunistic"
+decrypt_incoming = true
+security_word = "EscondidinhoPraiano"
+
+[domains."kiridu.net"]
+prefer_encrypt = "mutual"
+security_word = "KiriduPrivacidade"</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      Ixcondidim é software livre e de domínio público sob a <a href="https://unlicense.org" target="_blank" rel="noopener">GNU General Public License v3.0</a>.
+    </p>
+    <p style="margin-top: 6px;">
+      Desenvolvido com carinho para o ecossistema Postfix do Kiridu.
+    </p>
+  </footer>
+
+</body>
+</html>
