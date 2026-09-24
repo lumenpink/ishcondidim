@@ -6,7 +6,7 @@ authors = ["Lumen Pink <hi@lumen.pink>"]
 description = "Filtro Milter Postfix em Rust para suporte a Autocrypt L1 server-side com gestão automática de chaves OpenPGP"
 readme = "README.md"
 repository = "https://codeberg.org/lumenpink/ixcondidim"
-license = "Unlicense"
+license = "GPL-3.0-or-later"
 keywords = ["milter", "postfix", "autocrypt", "openpgp", "email-encryption"]
 categories = ["email", "cryptography", "network-programming"]
 

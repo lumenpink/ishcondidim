@@ -4,7 +4,7 @@
 
 [![Codeberg](https://img.shields.io/badge/Codeberg-lumenpink%2Fixcondidim-blue?logo=codeberg)](https://codeberg.org/lumenpink/ixcondidim)
 [![Rust](https://img.shields.io/badge/Rust-1.85%2B-orange?logo=rust)](https://www.rust-lang.org)
-[![License: Unlicense](https://img.shields.io/badge/License-Unlicense-lightgrey.svg)](https://unlicense.org)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/License-CC0_1.0-blue.svg)](LICENSE)
 [![Website](https://img.shields.io/badge/Site-ixcondidim.2lp.in-seagreen)](https://ixcondidim.2lp.in)
 
 ---
@@ -107,4 +107,4 @@ cargo test
 
 ## 📄 Licença
 
-Este projeto é software livre e de domínio público sob **GNU General Public License v3.0**. Consulte o arquivo [UNLICENSE](UNLICENSE) para detalhes.
+Este projeto é software livre e de domínio público sob a **GNU General Public License v3.0**. Consulte o arquivo [LICENSE](LICENSE) para detalhes.
