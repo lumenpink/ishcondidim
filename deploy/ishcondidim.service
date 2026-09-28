@@ -1,6 +1,6 @@
 [Unit]
-Description=Ixcondidim - Filtro Milter Postfix Autocrypt L1 em Rust
-Documentation=https://ixcondidim.2lp.in
+Description=Ishcondidim - Filtro Milter Postfix Autocrypt L1 em Rust
+Documentation=https://ishcondidim.2lp.in
 After=network.target local-fs.target
 Before=postfix.service
 
@@ -8,22 +8,22 @@ Before=postfix.service
 Type=simple
 User=postfix
 Group=postfix
-ExecStart=/usr/local/bin/ixcondidim --config /etc/ixcondidim/ixcondidim.toml
+ExecStart=/usr/local/bin/ishcondidim --config /etc/ishcondidim/ishcondidim.toml
 Restart=always
 RestartSec=3s
 
 # Hardening e isolamento estrito
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/run/ixcondidim /var/lib/ixcondidim
-ReadOnlyPaths=/etc/ixcondidim
+ReadWritePaths=/run/ishcondidim /var/lib/ishcondidim
+ReadOnlyPaths=/etc/ishcondidim
 PrivateTmp=true
 NoNewPrivileges=true
 
-RuntimeDirectory=ixcondidim
+RuntimeDirectory=ishcondidim
 RuntimeDirectoryMode=0770
 
-StateDirectory=ixcondidim
+StateDirectory=ishcondidim
 StateDirectoryMode=0700
 
 [Install]

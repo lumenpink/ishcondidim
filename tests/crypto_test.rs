@@ -1,4 +1,4 @@
-use ixcondidim::crypto::{
+use ishcondidim::crypto::{
     decrypt_message, generate_autocrypt_keypair, public_key_from_armor, public_key_from_binary,
     public_key_to_armor, public_key_to_binary, secret_key_from_armor, secret_key_to_armor,
     sign_and_encrypt,

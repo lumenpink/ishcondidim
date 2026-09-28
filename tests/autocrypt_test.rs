@@ -1,4 +1,4 @@
-use ixcondidim::autocrypt::{format_autocrypt_gossip, AutocryptHeader};
+use ishcondidim::autocrypt::{format_autocrypt_gossip, AutocryptHeader};
 
 #[test]
 fn test_parse_and_format_autocrypt_header() {
@@ -18,7 +18,7 @@ fn test_parse_and_format_autocrypt_header() {
 
 #[test]
 fn test_parse_autocrypt_with_spaces_and_extensions() {
-    let header_val = "addr=amigo@praia.com; prefer-encrypt=nopreference; _client=ixcondidim; keydata= AQIDBAUGBwgJCg== ";
+    let header_val = "addr=amigo@praia.com; prefer-encrypt=nopreference; _client=ishcondidim; keydata= AQIDBAUGBwgJCg== ";
     let parsed = AutocryptHeader::parse(header_val).expect("parse with extensions and spaces");
 
     assert_eq!(parsed.addr, "amigo@praia.com");
@@ -26,7 +26,7 @@ fn test_parse_autocrypt_with_spaces_and_extensions() {
     assert_eq!(parsed.keydata, vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     assert_eq!(
         parsed.extra_attributes.get("_client").map(|s| s.as_str()),
-        Some("ixcondidim")
+        Some("ishcondidim")
     );
 }
 

@@ -1,6 +1,6 @@
-use ixcondidim::autocrypt::AutocryptHeader;
-use ixcondidim::crypto::{generate_autocrypt_keypair, public_key_to_binary};
-use ixcondidim::keystore::KeyStore;
+use ishcondidim::autocrypt::AutocryptHeader;
+use ishcondidim::crypto::{generate_autocrypt_keypair, public_key_to_binary};
+use ishcondidim::keystore::KeyStore;
 use pgp::types::KeyDetails;
 use tempfile::tempdir;
 

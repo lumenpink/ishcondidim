@@ -1,12 +1,12 @@
 [server]
-listen = "unix:/run/ixcondidim/ixcondidim.sock"
+listen = "unix:/run/ishcondidim/ishcondidim.sock"
 # listen = "inet:127.0.0.1:8898"
 
 [storage]
 # Chaves privadas dos usuários locais (permissão estrita 0700)
-keys_dir = "/var/lib/ixcondidim/keys"
+keys_dir = "/var/lib/ishcondidim/keys"
 # Cache de contatos e chaves públicas de pares
-peers_dir = "/var/lib/ixcondidim/peers"
+peers_dir = "/var/lib/ishcondidim/peers"
 
 [default]
 # "mutual" (solicita criptografia mútua) ou "nopreference"

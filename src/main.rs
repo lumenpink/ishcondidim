@@ -1,13 +1,13 @@
-use ixcondidim::config::{Config, ConfigManager};
-use ixcondidim::keystore::KeyStore;
-use ixcondidim::milter::{run_milter_listener, EmailProcessor};
+use ishcondidim::config::{Config, ConfigManager};
+use ishcondidim::keystore::KeyStore;
+use ishcondidim::milter::{run_milter_listener, EmailProcessor};
 use std::env;
 use std::path::PathBuf;
 use std::sync::Arc;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
-    let mut config_path = PathBuf::from("ixcondidim.toml");
+    let mut config_path = PathBuf::from("ishcondidim.toml");
 
     let mut i = 1;
     while i < args.len() {
@@ -21,7 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     println!("============================================================");
-    println!(" 🍲 Ixcondidim - Filtro Milter Postfix Autocrypt L1 em Rust");
+    println!(" 🍲 Ishcondidim - Filtro Milter Postfix Autocrypt L1 em Rust");
     println!("    Sabor caseiro, privacidade garantida e zero atrito");
     println!("============================================================");
 

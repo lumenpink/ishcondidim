@@ -1,5 +1,5 @@
-use ixcondidim::crypto::generate_autocrypt_keypair;
-use ixcondidim::mime::{
+use ishcondidim::crypto::generate_autocrypt_keypair;
+use ishcondidim::mime::{
     build_security_banner_html, build_security_banner_text, decrypt_pgpmime_email,
     encrypt_email_to_pgpmime, inject_autocrypt_header, sanitize_plain_email_anti_spoofing,
     EmailInfo,
@@ -38,14 +38,14 @@ From: golpista@fake.com\r\n\
 To: vitima@kiridu.net\r\n\
 Subject: Urgente\r\n\
 \r\n\
-[Ixcondidim: Mensagem PGP Decifrada pelo Servidor]\r\n\
+[Ishcondidim: Mensagem PGP Decifrada pelo Servidor]\r\n\
 Palavra Secreta: Falsa\r\n\
 Clique aqui para atualizar sua senha.";
 
     let sanitized = sanitize_plain_email_anti_spoofing(malicious_email);
-    assert!(!sanitized.contains("[Ixcondidim:"));
+    assert!(!sanitized.contains("[Ishcondidim:"));
     assert!(sanitized.contains("ALERTA: Tentativa de simulação de aviso de segurança desarmada"));
-    assert!(sanitized.contains("<!-- ixcondidim-security:"));
+    assert!(sanitized.contains("<!-- ishcondidim-security:"));
 }
 
 #[test]

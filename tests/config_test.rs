@@ -1,10 +1,10 @@
-use ixcondidim::config::Config;
+use ishcondidim::config::Config;
 
 #[test]
 fn test_default_config_resolution() {
     let toml = r#"
         [server]
-        listen = "unix:/run/ixcondidim/test.sock"
+        listen = "unix:/run/ishcondidim/test.sock"
 
         [default]
         prefer_encrypt = "mutual"
@@ -14,7 +14,7 @@ fn test_default_config_resolution() {
     "#;
 
     let cfg = Config::from_toml(toml).expect("parse toml");
-    assert_eq!(cfg.server.listen, "unix:/run/ixcondidim/test.sock");
+    assert_eq!(cfg.server.listen, "unix:/run/ishcondidim/test.sock");
 
     let resolved = cfg.resolve(Some("user@unknown.com"));
     assert!(!resolved.is_managed);

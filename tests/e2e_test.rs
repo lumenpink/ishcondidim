@@ -1,6 +1,6 @@
-use ixcondidim::config::Config;
-use ixcondidim::keystore::KeyStore;
-use ixcondidim::milter::{
+use ishcondidim::config::Config;
+use ishcondidim::keystore::KeyStore;
+use ishcondidim::milter::{
     handle_milter_stream, EmailProcessor, SMFIC_BODY, SMFIC_BODYEOB, SMFIC_CONNECT, SMFIC_HEADER,
     SMFIC_MAIL, SMFIC_OPTNEG, SMFIC_QUIT, SMFIC_RCPT, SMFIR_ADDHEADER, SMFIS_CONTINUE,
 };

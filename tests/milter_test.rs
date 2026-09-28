@@ -1,6 +1,6 @@
-use ixcondidim::config::Config;
-use ixcondidim::keystore::KeyStore;
-use ixcondidim::milter::EmailProcessor;
+use ishcondidim::config::Config;
+use ishcondidim::keystore::KeyStore;
+use ishcondidim::milter::EmailProcessor;
 use std::sync::{Arc, RwLock};
 use tempfile::tempdir;
 
@@ -42,9 +42,9 @@ Oi Pedro, vamos comer um escondidinho hoje?";
     assert!(out1.replace_body.is_none());
 
     // Passo 2: Pedro responde enviando um e-mail com o cabeçalho Autocrypt dele
-    let (_, pedro_pub) = ixcondidim::crypto::generate_autocrypt_keypair("pedro@amigo.org").expect("pedro keys");
-    let pedro_pub_bytes = ixcondidim::crypto::public_key_to_binary(&pedro_pub).expect("pedro pub bytes");
-    let ac_pedro = ixcondidim::autocrypt::AutocryptHeader::new("pedro@amigo.org", "mutual", &pedro_pub_bytes);
+    let (_, pedro_pub) = ishcondidim::crypto::generate_autocrypt_keypair("pedro@amigo.org").expect("pedro keys");
+    let pedro_pub_bytes = ishcondidim::crypto::public_key_to_binary(&pedro_pub).expect("pedro pub bytes");
+    let ac_pedro = ishcondidim::autocrypt::AutocryptHeader::new("pedro@amigo.org", "mutual", &pedro_pub_bytes);
 
     let email_in_from_pedro = format!(
         "From: <pedro@amigo.org>\r\n\

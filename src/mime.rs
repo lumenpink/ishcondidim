@@ -115,6 +115,10 @@ impl EmailInfo {
 /// Sanitiza e-mails em texto claro para evitar que atacantes forjem o banner de segurança oficial
 pub fn sanitize_plain_email_anti_spoofing(content: &str) -> String {
     let patterns = [
+        "[Ishcondidim:",
+        "[ishcondidim:",
+        "ishcondidim-badge",
+        "🔒 [Ishcondidim",
         "[Ixcondidim:",
         "[ixcondidim:",
         "ixcondidim-badge",
@@ -136,7 +140,7 @@ pub fn sanitize_plain_email_anti_spoofing(content: &str) -> String {
 
     if modified {
         format!(
-            "<!-- ixcondidim-security: neutralized suspicious badge simulation -->\n{}",
+            "<!-- ishcondidim-security: neutralized suspicious badge simulation -->\n{}",
             result
         )
     } else {
@@ -240,7 +244,7 @@ pub fn encrypt_email_to_pgpmime(
         .parse(raw_original_bytes)
         .ok_or_else(|| MimeProcessingError::ParseError("Falha ao reanalisar MIME".into()))?;
 
-    let boundary = format!("ixcondidim_boundary_{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
+    let boundary = format!("ishcondidim_boundary_{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
 
     let mut out = Vec::new();
 

@@ -1,11 +1,11 @@
 [package]
-name = "ixcondidim"
+name = "ishcondidim"
 version = "0.1.0"
 edition = "2024"
 authors = ["Lumen Pink <hi@lumen.pink>"]
 description = "Filtro Milter Postfix em Rust para suporte a Autocrypt L1 server-side com gestão automática de chaves OpenPGP"
 readme = "README.md"
-repository = "https://codeberg.org/lumenpink/ixcondidim"
+repository = "https://codeberg.org/lumenpink/ishcondidim"
 license = "GPL-3.0-or-later"
 keywords = ["milter", "postfix", "autocrypt", "openpgp", "email-encryption"]
 categories = ["email", "cryptography", "network-programming"]

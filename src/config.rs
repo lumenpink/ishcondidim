@@ -29,7 +29,7 @@ pub struct ServerConfig {
 }
 
 fn default_listen() -> String {
-    "unix:/run/ixcondidim/ixcondidim.sock".to_string()
+    "unix:/run/ishcondidim/ishcondidim.sock".to_string()
 }
 
 impl Default for ServerConfig {
@@ -49,11 +49,11 @@ pub struct StorageConfig {
 }
 
 fn default_keys_dir() -> PathBuf {
-    PathBuf::from("/var/lib/ixcondidim/keys")
+    PathBuf::from("/var/lib/ishcondidim/keys")
 }
 
 fn default_peers_dir() -> PathBuf {
-    PathBuf::from("/var/lib/ixcondidim/peers")
+    PathBuf::from("/var/lib/ishcondidim/peers")
 }
 
 impl Default for StorageConfig {
@@ -237,12 +237,12 @@ impl ConfigManager {
                         if let Ok(new_cfg) = Config::from_file(&watch_path) {
                             if let Ok(mut w) = config_clone.write() {
                                 *w = new_cfg;
-                                eprintln!("[ixcondidim] Configuração recarregada com sucesso!");
+                                eprintln!("[ishcondidim] Configuração recarregada com sucesso!");
                             }
                         }
                     }
                 }
-                Err(e) => eprintln!("[ixcondidim] Erro no watcher de configuração: {:?}", e),
+                Err(e) => eprintln!("[ishcondidim] Erro no watcher de configuração: {:?}", e),
             },
             notify::Config::default(),
         )
@@ -268,12 +268,12 @@ impl ConfigManager {
                         if let Ok(new_cfg) = Config::from_file(&watch_path) {
                             if let Ok(mut w) = config_clone.write() {
                                 *w = new_cfg;
-                                eprintln!("[ixcondidim] Configuração recarregada com sucesso!");
+                                eprintln!("[ishcondidim] Configuração recarregada com sucesso!");
                             }
                         }
                     }
                 }
-                Err(e) => eprintln!("[ixcondidim] Erro no watcher: {:?}", e),
+                Err(e) => eprintln!("[ishcondidim] Erro no watcher: {:?}", e),
             },
             notify::Config::default(),
         );
