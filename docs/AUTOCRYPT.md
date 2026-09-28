@@ -1,6 +1,6 @@
-# 🔐 Especificação Autocrypt Level 1 no Ixcondidim
+# 🔐 Especificação Autocrypt Level 1 no Ishcondidim
 
-O **Ixcondidim** implementa a especificação oficial **Autocrypt Level 1** para servidores de e-mail de forma 100% autônoma.
+O **Ishcondidim** implementa a especificação oficial **Autocrypt Level 1** para servidores de e-mail de forma 100% autônoma.
 
 ---
 
@@ -15,7 +15,7 @@ O Autocrypt resolve o problema histórico de usabilidade do OpenPGP:
 
 ## 📬 Estrutura do Cabeçalho `Autocrypt:`
 
-Todo e-mail enviado por um remetente gerenciado pelo **Ixcondidim** recebe o cabeçalho:
+Todo e-mail enviado por um remetente gerenciado pelo **Ishcondidim** recebe o cabeçalho:
 
 ```http
 Autocrypt: addr=lumen@kiridu.net; prefer-encrypt=mutual; keydata=mQGNBG...
@@ -31,7 +31,7 @@ Autocrypt: addr=lumen@kiridu.net; prefer-encrypt=mutual; keydata=mQGNBG...
 
 Uma das maiores inovações do Autocrypt é evitar que um usuário fique impedido de ler mensagens (*lockout*) ao alternar para um cliente sem suporte a PGP.
 
-O **Ixcondidim** implementa rigorosamente a máquina de estados baseada no cabeçalho `Date` da mensagem:
+O **Ishcondidim** implementa rigorosamente a máquina de estados baseada no cabeçalho `Date` da mensagem:
 
 1. **E-mail recebido COM cabeçalho Autocrypt válido (`Date` mais recente):**
    * Armazena a nova chave pública no diretório `peers/`.

@@ -1,13 +1,13 @@
 # 📡 Protocolo Milter e Ciclo de Vida de Mensagens
 
-O **Ixcondidim** atua como um filtro **Milter** (Mail Filter) padrão do Sendmail/Postfix, interceptando o fluxo SMTP em tempo real.
+O **Ishcondidim** atua como um filtro **Milter** (Mail Filter) padrão do Sendmail/Postfix, interceptando o fluxo SMTP em tempo real.
 
 ---
 
 ## 🔄 Fluxo de Eventos Milter
 
 ```text
-Postfix                       Ixcondidim
+Postfix                       Ishcondidim
    │                               │
    ├─────── SMFIC_OPTNEG ─────────>│  Negociação de versão do protocolo e ações
    │<────── SMFIC_OPTNEG (OK) ─────┤  (SMFIF_ADDHDRS | SMFIF_CHGBODY | SMFIF_CHGHDRS)

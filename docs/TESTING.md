@@ -1,6 +1,6 @@
 # 🧪 Estratégia de Testes Automatizados
 
-O **Ixcondidim** possui uma suíte completa de testes automatizados unitários e de integração, garantindo que o protocolo Milter, a máquina de estados do Autocrypt e o motor criptográfico permaneçam intactos.
+O **Ishcondidim** possui uma suíte completa de testes automatizados unitários e de integração, garantindo que o protocolo Milter, a máquina de estados do Autocrypt e o motor criptográfico permaneçam intactos.
 
 ---
 

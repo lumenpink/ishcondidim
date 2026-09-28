@@ -1,6 +1,6 @@
-# ⚙️ Referência de Configuração (`ixcondidim.toml`)
+# ⚙️ Referência de Configuração (`ishcondidim.toml`)
 
-O arquivo de configuração do Ixcondidim utiliza o formato **TOML** e suporta **resolução hierárquica** em cascata com **Live Hot-Reload** (via `notify`).
+O arquivo de configuração do Ishcondidim utiliza o formato **TOML** e suporta **resolução hierárquica** em cascata com **Live Hot-Reload** (via `notify`).
 
 ---
 
@@ -16,14 +16,14 @@ $$\text{Remetente Específico} \longrightarrow \text{Domínio} \longrightarrow \
 
 ### `[server]`
 * `listen`: Socket de comunicação do Milter.
-  * Socket UNIX: `unix:/run/ixcondidim/ixcondidim.sock` *(recomendado)*.
+  * Socket UNIX: `unix:/run/ishcondidim/ishcondidim.sock` *(recomendado)*.
   * Socket TCP: `inet:127.0.0.1:8898`.
 
 ### `[storage]`
 * `keys_dir`: Caminho onde as chaves privadas e públicas locais são guardadas (permissão `0700`).
-  * Padrão: `/var/lib/ixcondidim/keys`.
+  * Padrão: `/var/lib/ishcondidim/keys`.
 * `peers_dir`: Caminho onde o cache de chaves públicas dos contatos externos é armazenado.
-  * Padrão: `/var/lib/ixcondidim/peers`.
+  * Padrão: `/var/lib/ishcondidim/peers`.
 
 ---
 

@@ -1,21 +1,21 @@
-# 🍲 Ixcondidim
+# 🍲 Ishcondidim
 
 > **Filtro Milter Postfix em Rust para Autocrypt Level 1 Server-Side com gestão automática de chaves OpenPGP, prevenção de lockout e selo anti-spoofing.**
 
-[![Codeberg](https://img.shields.io/badge/Codeberg-lumenpink%2Fixcondidim-blue?logo=codeberg)](https://codeberg.org/lumenpink/ixcondidim)
+[![Codeberg](https://img.shields.io/badge/Codeberg-lumenpink%2Fishcondidim-blue?logo=codeberg)](https://codeberg.org/lumenpink/ishcondidim)
 [![Rust](https://img.shields.io/badge/Rust-1.85%2B-orange?logo=rust)](https://www.rust-lang.org)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/License-CC0_1.0-blue.svg)](LICENSE)
-[![Website](https://img.shields.io/badge/Site-ixcondidim.2lp.in-seagreen)](https://ixcondidim.2lp.in)
+[![Website](https://img.shields.io/badge/Site-ishcondidim.2lp.in-seagreen)](https://ishcondidim.2lp.in)
 
 ---
 
-## 🎯 O que é o Ixcondidim?
+## 🎯 O que é o Ishcondidim?
 
-O **Ixcondidim** (*"escondidinho"* saboroso com privacidade garantida) é um daemon de filtro Milter para servidores de e-mail **Postfix** que implementa o padrão aberto **Autocrypt Level 1** inteiramente no lado do servidor.
+O **Ishcondidim** (*"escondidinho"* saboroso com privacidade garantida) é um daemon de filtro Milter para servidores de e-mail **Postfix** que implementa o padrão aberto **Autocrypt Level 1** inteiramente no lado do servidor.
 
 Com ele:
 1. Os usuários locais enviam e-mails normalmente a partir de qualquer cliente (Thunderbird, iPhone, Android, Outlook ou Webmail).
-2. O **Ixcondidim** verifica se o remetente já possui um par de chaves OpenPGP no keystore local. Se não tiver, **gera na hora um par moderno Ed25519 + X25519**.
+2. O **Ishcondidim** verifica se o remetente já possui um par de chaves OpenPGP no keystore local. Se não tiver, **gera na hora um par moderno Ed25519 + X25519**.
 3. Injeta o cabeçalho oficial `Autocrypt: addr=...; prefer-encrypt=mutual; keydata=...` em todas as mensagens de saída.
 4. Quando contatos externos respondem com Autocrypt, o servidor guarda as chaves públicas deles automaticamente.
 5. Se ambos os lados possuem chaves, as próximas mensagens são **cifradas automaticamente em PGP/MIME (`multipart/encrypted`)**.
@@ -69,13 +69,13 @@ Com ele:
 ## ✨ Principais Diferenciais
 
 ### 1. Curvas Elípticas Ultrarrápidas (Ed25519 + X25519)
-Ao invés de certificados RSA pesados e lentos de 4096 bits, o **Ixcondidim** utiliza Ed25519 para assinatura e X25519 para troca de chaves. O cabeçalho Autocrypt ocupa cerca de 1 KB e a geração de chaves é instantânea na memória.
+Ao invés de certificados RSA pesados e lentos de 4096 bits, o **Ishcondidim** utiliza Ed25519 para assinatura e X25519 para troca de chaves. O cabeçalho Autocrypt ocupa cerca de 1 KB e a geração de chaves é instantânea na memória.
 
 ### 2. Prevenção Inteligente de Lockout (Autocrypt State Machine)
-Se um contato que usava Autocrypt responder de repente de um aparelho sem PGP, o Ixcondidim detecta a mensagem sem Autocrypt e **retorna automaticamente para texto claro**. Isso evita a clássica falha de trancar o interlocutor fora da conversa.
+Se um contato que usava Autocrypt responder de repente de um aparelho sem PGP, o Ishcondidim detecta a mensagem sem Autocrypt e **retorna automaticamente para texto claro**. Isso evita a clássica falha de trancar o interlocutor fora da conversa.
 
 ### 3. Selo de Validação com Palavra de Segurança
-Mensagens decifradas no servidor recebem um banner claro com o status da assinatura digital e a **Palavra Secreta de Validação** definida na configuração. E-mails de spam ou phishing que tentem forjar o selo do Ixcondidim em texto claro são desarmados pelo mecanismo de sanitização anti-spoofing.
+Mensagens decifradas no servidor recebem um banner claro com o status da assinatura digital e a **Palavra Secreta de Validação** definida na configuração. E-mails de spam ou phishing que tentem forjar o selo do Ishcondidim em texto claro são desarmados pelo mecanismo de sanitização anti-spoofing.
 
 ### 4. Zero Dependências Externas (Rust Puro)
 O daemon utiliza a crate nativa `pgp`, dispensando `gpg`, `gpg-agent`, `libgpgme` ou daemons auxiliares no sistema.
@@ -91,7 +91,7 @@ cargo build --release
 
 ### Execução local:
 ```bash
-./target/release/ixcondidim --config ixcondidim.toml
+./target/release/ishcondidim --config ishcondidim.toml
 ```
 
 ---

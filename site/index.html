@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ixcondidim — Filtro Milter Postfix Autocrypt L1 em Rust</title>
+  <title>Ishcondidim — Filtro Milter Postfix Autocrypt L1 em Rust</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/assets/style.css">
 </head>
@@ -12,25 +12,25 @@
   <header>
     <div class="header-container">
       <div class="logo-wrapper">
-        <img src="/assets/logo.jpg" alt="Ixcondidim Logo" class="logo-img">
+        <img src="/assets/logo.jpg" alt="Ishcondidim Logo" class="logo-img">
       </div>
-      <h1>Ixcondidim</h1>
+      <h1>Ishcondidim</h1>
       <p class="tagline">Sabor caseiro, privacidade descomplicada e zero atrito no seu Postfix.</p>
 
       <div class="badges">
         <span class="badge badge-terracotta">🦀 Rust 100% Puro</span>
         <span class="badge badge-mint">🔐 Autocrypt Level 1</span>
         <span class="badge badge-ocean">⚡ Ed25519 & X25519</span>
-        <a href="https://codeberg.org/lumenpink/ixcondidim" class="badge badge-ocean" target="_blank" rel="noopener">📦 Codeberg Repo</a>
+        <a href="https://codeberg.org/lumenpink/ishcondidim" class="badge badge-ocean" target="_blank" rel="noopener">📦 Codeberg Repo</a>
       </div>
     </div>
   </header>
 
   <main class="container">
     <section class="card">
-      <h2>🍲 O que é o Ixcondidim?</h2>
+      <h2>🍲 O que é o Ishcondidim?</h2>
       <p>
-        O <strong>Ixcondidim</strong> é um filtro Milter de alta performance para <strong>Postfix</strong> que implementa a especificação aberta <strong>Autocrypt Level 1</strong> de forma 100% server-side.
+        O <strong>Ishcondidim</strong> é um filtro Milter de alta performance para <strong>Postfix</strong> que implementa a especificação aberta <strong>Autocrypt Level 1</strong> de forma 100% server-side.
       </p>
       <p>
         Ele elimina a dor de cabeça do PGP tradicional: os usuários da sua empresa ou homelab enviam e-mails normalmente a partir de qualquer cliente (iPhone, Android, Thunderbird, Webmail) e o servidor cuida de gerar chaves modernas, injetar cabeçalhos e cifrar e-mails sozinho!
@@ -50,7 +50,7 @@
         <div class="feature-box">
           <div class="feature-icon">🔄</div>
           <strong>Prevenção de Lockout</strong>
-          <p>Se o contato responder de um cliente sem PGP, o Ixcondidim volta para texto claro sem travar a conversa.</p>
+          <p>Se o contato responder de um cliente sem PGP, o Ishcondidim volta para texto claro sem travar a conversa.</p>
         </div>
         <div class="feature-box">
           <div class="feature-icon">🛡️</div>
@@ -63,11 +63,11 @@
     <section class="card">
       <h2>📬 Exemplo do Banner com Palavra de Segurança</h2>
       <p>
-        Ao receber um e-mail cifrado em PGP/MIME, o Ixcondidim decifra a mensagem para que ela seja lida em qualquer Webmail ou aplicativo, estampando a palavra secreta combinada na configuração:
+        Ao receber um e-mail cifrado em PGP/MIME, o Ishcondidim decifra a mensagem para que ela seja lida em qualquer Webmail ou aplicativo, estampando a palavra secreta combinada na configuração:
       </p>
 
       <div class="banner-demo">
-        <div style="font-weight: bold; margin-bottom: 6px;">🔒 [Ixcondidim: Mensagem PGP Decifrada pelo Servidor]</div>
+        <div style="font-weight: bold; margin-bottom: 6px;">🔒 [Ishcondidim: Mensagem PGP Decifrada pelo Servidor]</div>
         <div>Palavra Secreta de Validação: <span class="secret-badge">[EscondidinhoPraiano]</span></div>
         <div>Remetente: <code>amigo@quiosque.net</code></div>
         <div>Assinatura Digital: <strong style="color: #059669;">✓ VÁLIDA (Assinatura confirmada)</strong></div>
@@ -83,21 +83,21 @@
       <h2>🚀 Instalação Rápida no Postfix</h2>
 
       <h3>1. Compile e instale o binário:</h3>
-      <pre><code>git clone https://codeberg.org/lumenpink/ixcondidim.git
-cd ixcondidim
+      <pre><code>git clone https://codeberg.org/lumenpink/ishcondidim.git
+cd ishcondidim
 cargo build --release
-sudo cp target/release/ixcondidim /usr/local/bin/</code></pre>
+sudo cp target/release/ishcondidim /usr/local/bin/</code></pre>
 
       <h3>2. Instale o serviço Systemd e configuração:</h3>
-      <pre><code>sudo mkdir -p /etc/ixcondidim /var/lib/ixcondidim/keys /var/lib/ixcondidim/peers /run/ixcondidim
-sudo cp deploy/ixcondidim.example.toml /etc/ixcondidim/ixcondidim.toml
-sudo cp deploy/ixcondidim.service /etc/systemd/system/
+      <pre><code>sudo mkdir -p /etc/ishcondidim /var/lib/ishcondidim/keys /var/lib/ishcondidim/peers /run/ishcondidim
+sudo cp deploy/ishcondidim.example.toml /etc/ishcondidim/ishcondidim.toml
+sudo cp deploy/ishcondidim.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now ixcondidim</code></pre>
+sudo systemctl enable --now ishcondidim</code></pre>
 
       <h3>3. Plugue no Postfix (<code>/etc/postfix/main.cf</code>):</h3>
-      <pre><code># Integração de Milters (Ordem: Papéli -> Ixcondidim -> OpenDKIM)
-smtpd_milters = unix:/run/papeli/papeli.sock, unix:/run/ixcondidim/ixcondidim.sock, unix:/run/opendkim/opendkim.sock
+      <pre><code># Integração de Milters (Ordem: Papéli -> Ishcondidim -> OpenDKIM)
+smtpd_milters = unix:/run/papeli/papeli.sock, unix:/run/ishcondidim/ishcondidim.sock, unix:/run/opendkim/opendkim.sock
 non_smtpd_milters = $smtpd_milters
 
 milter_default_action = accept
@@ -108,13 +108,13 @@ milter_protocol = 6</code></pre>
     </section>
 
     <section class="card">
-      <h2>⚙️ Exemplo de Configuração (<code>ixcondidim.toml</code>)</h2>
+      <h2>⚙️ Exemplo de Configuração (<code>ishcondidim.toml</code>)</h2>
       <pre><code>[server]
-listen = "unix:/run/ixcondidim/ixcondidim.sock"
+listen = "unix:/run/ishcondidim/ishcondidim.sock"
 
 [storage]
-keys_dir = "/var/lib/ixcondidim/keys"
-peers_dir = "/var/lib/ixcondidim/peers"
+keys_dir = "/var/lib/ishcondidim/keys"
+peers_dir = "/var/lib/ishcondidim/peers"
 
 [default]
 prefer_encrypt = "mutual"
@@ -133,7 +133,7 @@ security_word = "KiriduPrivacidade"</code></pre>
 
   <footer>
     <p>
-      Ixcondidim é software livre e de domínio público sob a <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">GNU General Public License v3.0</a>.
+      Ishcondidim é software livre e de domínio público sob a <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">GNU General Public License v3.0</a>.
     </p>
     <p style="margin-top: 6px;">
       Desenvolvido com carinho para o ecossistema Postfix do Kiridu.

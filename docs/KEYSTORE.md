@@ -1,6 +1,6 @@
 # 🗝️ Arquitetura do Keystore e Criptografia
 
-O **Ixcondidim** utiliza criptografia OpenPGP nativa 100% em Rust através da crate `pgp`, eliminando completamente o acoplamento com daemons externos como `gpg-agent` ou ferramentas C legadas.
+O **Ishcondidim** utiliza criptografia OpenPGP nativa 100% em Rust através da crate `pgp`, eliminando completamente o acoplamento com daemons externos como `gpg-agent` ou ferramentas C legadas.
 
 ---
 
@@ -16,7 +16,7 @@ Seguindo as melhores práticas modernas de criptografia:
 ## 📁 Estrutura de Arquivos no Disco
 
 ```text
-/var/lib/ixcondidim/
+/var/lib/ishcondidim/
 ├── keys/                           # Chaves dos usuários locais (Modo 0700)
 │   ├── usuario@kiridu.net.sec      # Chave privada protegida (Modo 0600)
 │   └── usuario@kiridu.net.pub      # Chave pública (Modo 0644)
