@@ -13,6 +13,8 @@
 
 O **Ishcondidim** (*"escondidinho"* saboroso com privacidade garantida) é um daemon de filtro Milter para servidores de e-mail **Postfix** que implementa o padrão aberto **Autocrypt Level 1** inteiramente no lado do servidor.
 
+> 💡 **Nota de Nomenclatura:** O nome original do projeto foi concebido inicialmente com **X** (*Ixcondidim*), mas por uma carinhosa e certeira sugestão da **Lisi**, foi oficialmente alterado para **Ishcondidim** (com **sh**), dando o tempero e autenticidade perfeitos ao projeto! 🍲✨
+
 Com ele:
 1. Os usuários locais enviam e-mails normalmente a partir de qualquer cliente (Thunderbird, iPhone, Android, Outlook ou Webmail).
 2. O **Ishcondidim** verifica se o remetente já possui um par de chaves OpenPGP no keystore local. Se não tiver, **gera na hora um par moderno Ed25519 + X25519**.
