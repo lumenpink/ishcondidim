@@ -170,7 +170,8 @@ impl EmailProcessor {
 }
 
 pub fn handle_milter_stream<S: Read + Write>(mut stream: S, processor: &EmailProcessor) {
-    let mut raw_message_buffer = Vec::new();
+    let mut header_buffer = Vec::new();
+    let mut body_buffer = Vec::new();
 
     loop {
         let mut len_buf = [0u8; 4];
@@ -201,20 +202,53 @@ pub fn handle_milter_stream<S: Read + Write>(mut stream: S, processor: &EmailPro
 
                 send_frame(&mut stream, &response);
             }
-            SMFIC_CONNECT | SMFIC_HELO | SMFIC_MAIL | SMFIC_RCPT | SMFIC_EOH => {
+            SMFIC_CONNECT | SMFIC_HELO | SMFIC_MAIL | SMFIC_RCPT => {
                 send_simple_response(&mut stream, SMFIS_CONTINUE);
             }
             SMFIC_HEADER => {
-                raw_message_buffer.extend_from_slice(payload);
-                raw_message_buffer.extend_from_slice(b"\r\n");
+                if let Some(pos) = payload.iter().position(|&b| b == 0) {
+                    let name = &payload[..pos];
+                    let mut val = &payload[pos + 1..];
+                    if let Some(val_pos) = val.iter().position(|&b| b == 0) {
+                        val = &val[..val_pos];
+                    }
+                    header_buffer.extend_from_slice(name);
+                    header_buffer.extend_from_slice(b": ");
+                    header_buffer.extend_from_slice(val);
+                    header_buffer.extend_from_slice(b"\r\n");
+                } else {
+                    header_buffer.extend_from_slice(payload);
+                    header_buffer.extend_from_slice(b"\r\n");
+                }
+                send_simple_response(&mut stream, SMFIS_CONTINUE);
+            }
+            SMFIC_EOH => {
                 send_simple_response(&mut stream, SMFIS_CONTINUE);
             }
             SMFIC_BODY => {
-                raw_message_buffer.extend_from_slice(payload);
+                body_buffer.extend_from_slice(payload);
                 send_simple_response(&mut stream, SMFIS_CONTINUE);
             }
             SMFIC_BODYEOB => {
-                let result = processor.process_email(&raw_message_buffer);
+                let full_message = if header_buffer.is_empty() {
+                    body_buffer.clone()
+                } else if body_buffer.starts_with(b"From:")
+                    || body_buffer.starts_with(b"From: ")
+                    || body_buffer.starts_with(b"Received:")
+                    || body_buffer.starts_with(b"Return-Path:")
+                {
+                    body_buffer.clone()
+                } else {
+                    let mut full = Vec::with_capacity(header_buffer.len() + 2 + body_buffer.len());
+                    full.extend_from_slice(&header_buffer);
+                    full.extend_from_slice(b"\r\n");
+                    full.extend_from_slice(&body_buffer);
+                    full
+                };
+
+                let result = processor.process_email(&full_message);
+                eprintln!("[ishcondidim] EOB: full_len={}, add_headers={}, repl_body={}",
+                    full_message.len(), result.add_headers.len(), result.replace_body.is_some());
 
                 // 1. Injeta cabeçalhos (ex: Autocrypt)
                 for (name, val) in result.add_headers {
@@ -238,10 +272,12 @@ pub fn handle_milter_stream<S: Read + Write>(mut stream: S, processor: &EmailPro
                 }
 
                 send_simple_response(&mut stream, SMFIS_CONTINUE);
-                raw_message_buffer.clear();
+                header_buffer.clear();
+                body_buffer.clear();
             }
             SMFIC_ABORT => {
-                raw_message_buffer.clear();
+                header_buffer.clear();
+                body_buffer.clear();
             }
             SMFIC_QUIT => {
                 break;
