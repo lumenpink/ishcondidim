@@ -80,17 +80,17 @@ impl EmailProcessor {
 
             if let Ok(Some((sec_key, pub_key))) = keypair_res {
                 // 1. Gera o cabeçalho Autocrypt
-                if sender_resolved.auto_add_header {
-                    if let Ok(pub_bytes) = public_key_to_binary(&pub_key) {
-                        let ac = AutocryptHeader::new(
-                            sender_email,
-                            &sender_resolved.prefer_encrypt,
-                            &pub_bytes,
-                        );
-                        output
-                            .add_headers
-                            .push(("Autocrypt".to_string(), ac.to_header_value()));
-                    }
+                if sender_resolved.auto_add_header
+                    && let Ok(pub_bytes) = public_key_to_binary(&pub_key)
+                {
+                    let ac = AutocryptHeader::new(
+                        sender_email,
+                        &sender_resolved.prefer_encrypt,
+                        &pub_bytes,
+                    );
+                    output
+                        .add_headers
+                        .push(("Autocrypt".to_string(), ac.to_header_value()));
                 }
 
                 // 2. Verifica se devemos encriptar oportunisticamente em PGP/MIME
@@ -132,12 +132,12 @@ impl EmailProcessor {
             }
 
             // 2. Proteção Anti-Spoofing: e-mails em texto claro não podem imitar o selo
-            if !info.is_pgp_mime {
-                if let Ok(utf8_content) = std::str::from_utf8(raw_bytes) {
-                    let sanitized = sanitize_plain_email_anti_spoofing(utf8_content);
-                    if sanitized != utf8_content {
-                        output.replace_body = Some(sanitized.into_bytes());
-                    }
+            if !info.is_pgp_mime
+                && let Ok(utf8_content) = std::str::from_utf8(raw_bytes)
+            {
+                let sanitized = sanitize_plain_email_anti_spoofing(utf8_content);
+                if sanitized != utf8_content {
+                    output.replace_body = Some(sanitized.into_bytes());
                 }
             }
 
@@ -146,23 +146,23 @@ impl EmailProcessor {
                 // Encontra qual destinatário é uma conta local gerenciada
                 for rcpt in &info.to {
                     let rcpt_resolved = cfg.resolve(Some(rcpt));
-                    if rcpt_resolved.is_managed && rcpt_resolved.decrypt_incoming {
-                        if let Ok(Some((sec_key, _))) = self.keystore.get_local_keypair(rcpt) {
-                            let expected_sender_pub =
-                                self.keystore.get_peer_public_key(sender_email);
-                            if let Ok(decrypted_bytes) = decrypt_pgpmime_email(
-                                raw_bytes,
-                                &sec_key,
-                                expected_sender_pub.as_ref(),
-                                rcpt_resolved.security_word.as_deref(),
-                            ) {
-                                output.replace_body = Some(decrypted_bytes);
-                                output.add_headers.push((
-                                    "X-Ixcondidim-Status".to_string(),
-                                    "decrypted-and-verified".to_string(),
-                                ));
-                                break;
-                            }
+                    if rcpt_resolved.is_managed
+                        && rcpt_resolved.decrypt_incoming
+                        && let Ok(Some((sec_key, _))) = self.keystore.get_local_keypair(rcpt)
+                    {
+                        let expected_sender_pub = self.keystore.get_peer_public_key(sender_email);
+                        if let Ok(decrypted_bytes) = decrypt_pgpmime_email(
+                            raw_bytes,
+                            &sec_key,
+                            expected_sender_pub.as_ref(),
+                            rcpt_resolved.security_word.as_deref(),
+                        ) {
+                            output.replace_body = Some(decrypted_bytes);
+                            output.add_headers.push((
+                                "X-Ixcondidim-Status".to_string(),
+                                "decrypted-and-verified".to_string(),
+                            ));
+                            break;
                         }
                     }
                 }
@@ -237,9 +237,8 @@ pub fn handle_milter_stream<S: Read + Write>(mut stream: S, processor: &EmailPro
                 send_simple_response(&mut stream, SMFIS_CONTINUE);
             }
             SMFIC_BODYEOB => {
-                let full_message = if header_buffer.is_empty() {
-                    body_buffer.clone()
-                } else if body_buffer.starts_with(b"From:")
+                let full_message = if header_buffer.is_empty()
+                    || body_buffer.starts_with(b"From:")
                     || body_buffer.starts_with(b"From: ")
                     || body_buffer.starts_with(b"Received:")
                     || body_buffer.starts_with(b"Return-Path:")
@@ -334,11 +333,11 @@ pub fn extract_header_value(headers: &[u8], target_name: &str) -> Option<String>
                 val.push_str(line.trim());
             }
         } else {
-            if let Some((name, val)) = current_header.take() {
-                if name == target {
-                    result = Some(val);
-                    break;
-                }
+            if let Some((name, val)) = current_header.take()
+                && name == target
+            {
+                result = Some(val);
+                break;
             }
             if let Some(colon_pos) = line.find(':') {
                 let name = line[..colon_pos].trim().to_lowercase();
@@ -347,12 +346,11 @@ pub fn extract_header_value(headers: &[u8], target_name: &str) -> Option<String>
             }
         }
     }
-    if result.is_none() {
-        if let Some((name, val)) = current_header {
-            if name == target {
-                result = Some(val);
-            }
-        }
+    if result.is_none()
+        && let Some((name, val)) = current_header
+        && name == target
+    {
+        result = Some(val);
     }
     result
 }
@@ -386,23 +384,19 @@ pub fn run_milter_listener(listen: &str, processor: Arc<EmailProcessor>) -> std:
             let _ = std::fs::remove_file(path);
         }
         let listener = UnixListener::bind(path)?;
-        for stream in listener.incoming() {
-            if let Ok(s) = stream {
-                let proc = Arc::clone(&processor);
-                std::thread::spawn(move || {
-                    handle_milter_stream(s, &proc);
-                });
-            }
+        for s in listener.incoming().flatten() {
+            let proc = Arc::clone(&processor);
+            std::thread::spawn(move || {
+                handle_milter_stream(s, &proc);
+            });
         }
     } else if let Some(addr) = listen.strip_prefix("inet:") {
         let listener = TcpListener::bind(addr)?;
-        for stream in listener.incoming() {
-            if let Ok(s) = stream {
-                let proc = Arc::clone(&processor);
-                std::thread::spawn(move || {
-                    handle_milter_stream(s, &proc);
-                });
-            }
+        for s in listener.incoming().flatten() {
+            let proc = Arc::clone(&processor);
+            std::thread::spawn(move || {
+                handle_milter_stream(s, &proc);
+            });
         }
     } else {
         return Err(std::io::Error::new(

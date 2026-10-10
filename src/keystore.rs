@@ -73,11 +73,7 @@ impl KeyStore {
     }
 
     fn sanitize_email_for_filename(email: &str) -> String {
-        email
-            .trim()
-            .to_lowercase()
-            .replace('/', "_")
-            .replace('\\', "_")
+        email.trim().to_lowercase().replace(['/', '\\'], "_")
     }
 
     /// Obtém ou gera um par de chaves OpenPGP local para uma conta interna
@@ -202,13 +198,13 @@ impl KeyStore {
 
             if is_newer_or_equal {
                 // Tenta carregar a chave pública do cabeçalho
-                if let Ok(pub_key) = public_key_from_binary(&header.keydata) {
-                    if let Ok(armor) = public_key_to_armor(&pub_key) {
-                        state.public_key_armor = Some(armor);
-                        state.prefer_encrypt = header.prefer_encrypt.clone();
-                        state.autocrypt_enabled = true;
-                        state.effective_date = Some(msg_date);
-                    }
+                if let Ok(pub_key) = public_key_from_binary(&header.keydata)
+                    && let Ok(armor) = public_key_to_armor(&pub_key)
+                {
+                    state.public_key_armor = Some(armor);
+                    state.prefer_encrypt = header.prefer_encrypt.clone();
+                    state.autocrypt_enabled = true;
+                    state.effective_date = Some(msg_date);
                 }
             }
         } else {

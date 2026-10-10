@@ -11,11 +11,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut i = 1;
     while i < args.len() {
-        if args[i] == "--config" || args[i] == "-c" {
-            if i + 1 < args.len() {
-                config_path = PathBuf::from(&args[i + 1]);
-                i += 1;
-            }
+        if (args[i] == "--config" || args[i] == "-c") && i + 1 < args.len() {
+            config_path = PathBuf::from(&args[i + 1]);
+            i += 1;
         }
         i += 1;
     }

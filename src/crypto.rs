@@ -192,12 +192,12 @@ pub fn decrypt_message(
     let mut is_signature_valid = false;
     let mut signer_key_id = None;
 
-    if let Some(pubkey) = expected_sender_pub {
-        if decompressed.verify(&pubkey.primary_key).is_ok() {
-            is_signed = true;
-            is_signature_valid = true;
-            signer_key_id = Some(hex::encode(pubkey.fingerprint().as_bytes()));
-        }
+    if let Some(pubkey) = expected_sender_pub
+        && decompressed.verify(&pubkey.primary_key).is_ok()
+    {
+        is_signed = true;
+        is_signature_valid = true;
+        signer_key_id = Some(hex::encode(pubkey.fingerprint().as_bytes()));
     }
 
     Ok(DecryptedResult {

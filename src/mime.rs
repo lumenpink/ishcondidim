@@ -91,15 +91,13 @@ impl EmailInfo {
         let mut autocrypt_header = None;
         if let Some(from_addr) = &from {
             for h in msg.headers() {
-                if h.name.as_str().eq_ignore_ascii_case("Autocrypt") {
-                    if let HeaderValue::Text(val) = &h.value {
-                        if let Ok(parsed_ac) = AutocryptHeader::parse(val) {
-                            if parsed_ac.addr == *from_addr {
-                                autocrypt_header = Some(parsed_ac);
-                                break;
-                            }
-                        }
-                    }
+                if h.name.as_str().eq_ignore_ascii_case("Autocrypt")
+                    && let HeaderValue::Text(val) = &h.value
+                    && let Ok(parsed_ac) = AutocryptHeader::parse(val)
+                    && parsed_ac.addr == *from_addr
+                {
+                    autocrypt_header = Some(parsed_ac);
+                    break;
                 }
             }
         }
@@ -330,17 +328,16 @@ pub fn decrypt_pgpmime_email(
     let mut encrypted_payload: Option<Vec<u8>> = None;
 
     for part in &parsed.parts {
-        if let Some(content_type) = part.content_type() {
-            if content_type.c_type.eq_ignore_ascii_case("application")
-                && content_type
-                    .c_subtype
-                    .as_deref()
-                    .unwrap_or("")
-                    .eq_ignore_ascii_case("octet-stream")
-            {
-                encrypted_payload = Some(part.contents().to_vec());
-                break;
-            }
+        if let Some(content_type) = part.content_type()
+            && content_type.c_type.eq_ignore_ascii_case("application")
+            && content_type
+                .c_subtype
+                .as_deref()
+                .unwrap_or("")
+                .eq_ignore_ascii_case("octet-stream")
+        {
+            encrypted_payload = Some(part.contents().to_vec());
+            break;
         }
     }
 

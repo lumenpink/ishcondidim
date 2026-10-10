@@ -233,13 +233,12 @@ impl ConfigManager {
         let mut watcher = RecommendedWatcher::new(
             move |res: Result<Event, notify::Error>| match res {
                 Ok(event) => {
-                    if event.kind.is_modify() {
-                        if let Ok(new_cfg) = Config::from_file(&watch_path) {
-                            if let Ok(mut w) = config_clone.write() {
-                                *w = new_cfg;
-                                eprintln!("[ishcondidim] Configuração recarregada com sucesso!");
-                            }
-                        }
+                    if event.kind.is_modify()
+                        && let Ok(new_cfg) = Config::from_file(&watch_path)
+                        && let Ok(mut w) = config_clone.write()
+                    {
+                        *w = new_cfg;
+                        eprintln!("[ishcondidim] Configuração recarregada com sucesso!");
                     }
                 }
                 Err(e) => eprintln!("[ishcondidim] Erro no watcher de configuração: {:?}", e),
@@ -264,13 +263,12 @@ impl ConfigManager {
         let watcher = RecommendedWatcher::new(
             move |res: Result<Event, notify::Error>| match res {
                 Ok(event) => {
-                    if event.kind.is_modify() {
-                        if let Ok(new_cfg) = Config::from_file(&watch_path) {
-                            if let Ok(mut w) = config_clone.write() {
-                                *w = new_cfg;
-                                eprintln!("[ishcondidim] Configuração recarregada com sucesso!");
-                            }
-                        }
+                    if event.kind.is_modify()
+                        && let Ok(new_cfg) = Config::from_file(&watch_path)
+                        && let Ok(mut w) = config_clone.write()
+                    {
+                        *w = new_cfg;
+                        eprintln!("[ishcondidim] Configuração recarregada com sucesso!");
                     }
                 }
                 Err(e) => eprintln!("[ishcondidim] Erro no watcher: {:?}", e),
