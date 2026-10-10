@@ -1,8 +1,8 @@
 use ishcondidim::config::Config;
 use ishcondidim::keystore::KeyStore;
 use ishcondidim::milter::{
-    handle_milter_stream, EmailProcessor, SMFIC_BODY, SMFIC_BODYEOB, SMFIC_CONNECT, SMFIC_HEADER,
-    SMFIC_MAIL, SMFIC_OPTNEG, SMFIC_QUIT, SMFIC_RCPT, SMFIR_ADDHEADER, SMFIS_CONTINUE,
+    EmailProcessor, SMFIC_BODY, SMFIC_BODYEOB, SMFIC_CONNECT, SMFIC_HEADER, SMFIC_MAIL,
+    SMFIC_OPTNEG, SMFIC_QUIT, SMFIC_RCPT, SMFIR_ADDHEADER, SMFIS_CONTINUE, handle_milter_stream,
 };
 use std::io::{self, Cursor, Read, Write};
 use std::sync::{Arc, RwLock};
@@ -78,7 +78,10 @@ fn test_milter_protocol_session_e2e() {
     client_bytes.extend_from_slice(&encode_milter_frame(SMFIC_RCPT, b"<amigo@praia.net>\0"));
 
     // 3. HEADER & BODY
-    client_bytes.extend_from_slice(&encode_milter_frame(SMFIC_HEADER, b"From: <lumen@kiridu.net>"));
+    client_bytes.extend_from_slice(&encode_milter_frame(
+        SMFIC_HEADER,
+        b"From: <lumen@kiridu.net>",
+    ));
     client_bytes.extend_from_slice(&encode_milter_frame(SMFIC_HEADER, b"To: <amigo@praia.net>"));
     client_bytes.extend_from_slice(&encode_milter_frame(SMFIC_HEADER, b"Subject: Ola praia"));
     client_bytes.extend_from_slice(&encode_milter_frame(
@@ -123,6 +126,12 @@ fn test_milter_protocol_session_e2e() {
         }
     }
 
-    assert!(saw_optneg_resp, "Milter deve ter respondido negociacao de protocolo");
-    assert!(saw_addheader_resp, "Milter deve ter injetado cabecalho Autocrypt no BODYEOB");
+    assert!(
+        saw_optneg_resp,
+        "Milter deve ter respondido negociacao de protocolo"
+    );
+    assert!(
+        saw_addheader_resp,
+        "Milter deve ter injetado cabecalho Autocrypt no BODYEOB"
+    );
 }

@@ -1,6 +1,6 @@
 use ishcondidim::config::{Config, ConfigManager};
 use ishcondidim::keystore::KeyStore;
-use ishcondidim::milter::{run_milter_listener, EmailProcessor};
+use ishcondidim::milter::{EmailProcessor, run_milter_listener};
 use std::env;
 use std::path::PathBuf;
 use std::sync::Arc;

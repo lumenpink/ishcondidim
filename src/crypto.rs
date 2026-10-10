@@ -1,6 +1,6 @@
 use pgp::composed::{
-    Deserializable, EncryptionCaps, KeyType, Message, MessageBuilder,
-    SecretKeyParamsBuilder, SignedPublicKey, SignedSecretKey, SubkeyParamsBuilder,
+    Deserializable, EncryptionCaps, KeyType, Message, MessageBuilder, SecretKeyParamsBuilder,
+    SignedPublicKey, SignedSecretKey, SubkeyParamsBuilder,
 };
 use pgp::crypto::ecc_curve::ECCCurve;
 use pgp::crypto::hash::HashAlgorithm;
@@ -26,7 +26,9 @@ impl fmt::Display for CryptoError {
         match self {
             CryptoError::KeyGenError(e) => write!(f, "OpenPGP KeyGen Error: {}", e),
             CryptoError::SerializationError(e) => write!(f, "OpenPGP Serialization Error: {}", e),
-            CryptoError::DeserializationError(e) => write!(f, "OpenPGP Deserialization Error: {}", e),
+            CryptoError::DeserializationError(e) => {
+                write!(f, "OpenPGP Deserialization Error: {}", e)
+            }
             CryptoError::EncryptionError(e) => write!(f, "OpenPGP Encryption Error: {}", e),
             CryptoError::DecryptionError(e) => write!(f, "OpenPGP Decryption Error: {}", e),
             CryptoError::VerificationError(e) => write!(f, "OpenPGP Verification Error: {}", e),
@@ -85,8 +87,7 @@ pub fn public_key_to_binary(public_key: &SignedPublicKey) -> Result<Vec<u8>, Cry
 
 /// Carrega uma chave pública a partir de bytes binários brutos
 pub fn public_key_from_binary(bytes: &[u8]) -> Result<SignedPublicKey, CryptoError> {
-    SignedPublicKey::from_bytes(bytes)
-        .map_err(|e| CryptoError::DeserializationError(e.to_string()))
+    SignedPublicKey::from_bytes(bytes).map_err(|e| CryptoError::DeserializationError(e.to_string()))
 }
 
 /// Serializa chave privada para armadura ASCII (.sec)

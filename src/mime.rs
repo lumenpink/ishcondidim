@@ -1,7 +1,7 @@
 use crate::autocrypt::AutocryptHeader;
 use crate::crypto::{decrypt_message, sign_and_encrypt};
-use mail_builder::headers::raw::Raw;
 use mail_builder::MessageBuilder;
+use mail_builder::headers::raw::Raw;
 use mail_parser::{HeaderValue, MessageParser, MimeHeaders};
 use pgp::composed::{SignedPublicKey, SignedSecretKey};
 use std::fmt;
@@ -37,7 +37,9 @@ pub struct EmailInfo {
 }
 
 impl EmailInfo {
-    pub fn parse(raw_bytes: &[u8]) -> Result<(Self, mail_parser::Message<'_>), MimeProcessingError> {
+    pub fn parse(
+        raw_bytes: &[u8],
+    ) -> Result<(Self, mail_parser::Message<'_>), MimeProcessingError> {
         let msg = MessageParser::default()
             .parse(raw_bytes)
             .ok_or_else(|| MimeProcessingError::ParseError("Falha ao analisar MIME".into()))?;
@@ -75,7 +77,11 @@ impl EmailInfo {
             .map(|h| match h {
                 HeaderValue::ContentType(ct) => {
                     ct.c_type.eq_ignore_ascii_case("multipart")
-                        && ct.c_subtype.as_deref().unwrap_or("").eq_ignore_ascii_case("encrypted")
+                        && ct
+                            .c_subtype
+                            .as_deref()
+                            .unwrap_or("")
+                            .eq_ignore_ascii_case("encrypted")
                 }
                 _ => false,
             })
@@ -244,12 +250,19 @@ pub fn encrypt_email_to_pgpmime(
         .parse(raw_original_bytes)
         .ok_or_else(|| MimeProcessingError::ParseError("Falha ao reanalisar MIME".into()))?;
 
-    let boundary = format!("ishcondidim_boundary_{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
+    let boundary = format!(
+        "ishcondidim_boundary_{}",
+        chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0)
+    );
 
     let mut out = Vec::new();
 
     // Copia cabeçalhos principais essenciais
-    if let Some(from) = parsed.from().and_then(|f| f.first()).and_then(|a| a.address()) {
+    if let Some(from) = parsed
+        .from()
+        .and_then(|f| f.first())
+        .and_then(|a| a.address())
+    {
         out.extend_from_slice(format!("From: <{}>\r\n", from).as_bytes());
     }
     if let Some(subject) = parsed.subject() {
@@ -309,7 +322,9 @@ pub fn decrypt_pgpmime_email(
 ) -> Result<Vec<u8>, MimeProcessingError> {
     let parsed = MessageParser::default()
         .parse(raw_encrypted_bytes)
-        .ok_or_else(|| MimeProcessingError::ParseError("Falha ao analisar mensagem PGP/MIME".into()))?;
+        .ok_or_else(|| {
+            MimeProcessingError::ParseError("Falha ao analisar mensagem PGP/MIME".into())
+        })?;
 
     // Procura o payload cifrado na segunda parte (application/octet-stream)
     let mut encrypted_payload: Option<Vec<u8>> = None;
@@ -317,7 +332,11 @@ pub fn decrypt_pgpmime_email(
     for part in &parsed.parts {
         if let Some(content_type) = part.content_type() {
             if content_type.c_type.eq_ignore_ascii_case("application")
-                && content_type.c_subtype.as_deref().unwrap_or("").eq_ignore_ascii_case("octet-stream")
+                && content_type
+                    .c_subtype
+                    .as_deref()
+                    .unwrap_or("")
+                    .eq_ignore_ascii_case("octet-stream")
             {
                 encrypted_payload = Some(part.contents().to_vec());
                 break;
@@ -326,7 +345,9 @@ pub fn decrypt_pgpmime_email(
     }
 
     let payload = encrypted_payload.ok_or_else(|| {
-        MimeProcessingError::ParseError("Nenhum anexo application/octet-stream encontrado no PGP/MIME".into())
+        MimeProcessingError::ParseError(
+            "Nenhum anexo application/octet-stream encontrado no PGP/MIME".into(),
+        )
     })?;
 
     // Decifra o payload
@@ -361,7 +382,11 @@ pub fn decrypt_pgpmime_email(
 
         let mut builder = MessageBuilder::new();
 
-        if let Some(from) = inner.from().and_then(|f| f.first()).and_then(|a| a.address()) {
+        if let Some(from) = inner
+            .from()
+            .and_then(|f| f.first())
+            .and_then(|a| a.address())
+        {
             builder = builder.from(from);
         }
         if let Some(sub) = inner.subject() {
@@ -372,17 +397,10 @@ pub fn decrypt_pgpmime_email(
         }
 
         // Adiciona cabeçalho informativo do Ixcondidim
-        builder = builder.header(
-            "X-Ixcondidim-Decrypted",
-            Raw::new("true; verified=pass"),
-        );
+        builder = builder.header("X-Ixcondidim-Decrypted", Raw::new("true; verified=pass"));
 
-        let body_html = inner
-            .body_html(0)
-            .map(|h| format!("{}{}", banner_html, h));
-        let body_text = inner
-            .body_text(0)
-            .map(|t| format!("{}{}", banner_text, t));
+        let body_html = inner.body_html(0).map(|h| format!("{}{}", banner_html, h));
+        let body_text = inner.body_text(0).map(|t| format!("{}{}", banner_text, t));
 
         if let Some(txt) = body_text {
             builder = builder.text_body(txt);
@@ -394,7 +412,9 @@ pub fn decrypt_pgpmime_email(
             builder = builder.text_body(banner_text);
         }
 
-        builder.write_to_vec().map_err(|e| MimeProcessingError::BuildError(e.to_string()))?
+        builder
+            .write_to_vec()
+            .map_err(|e| MimeProcessingError::BuildError(e.to_string()))?
     } else {
         // Não é MIME válido, anexa como texto bruto
         let banner_text = build_security_banner_text(
@@ -413,10 +433,7 @@ pub fn decrypt_pgpmime_email(
 }
 
 /// Injeta o cabeçalho Autocrypt no e-mail de saída
-pub fn inject_autocrypt_header(
-    raw_email: &[u8],
-    autocrypt_header_val: &str,
-) -> Vec<u8> {
+pub fn inject_autocrypt_header(raw_email: &[u8], autocrypt_header_val: &str) -> Vec<u8> {
     let header_line = format!("Autocrypt: {}\r\n", autocrypt_header_val);
     let mut out = Vec::with_capacity(raw_email.len() + header_line.len());
 

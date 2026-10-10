@@ -40,8 +40,7 @@ fn test_sign_and_encrypt_roundtrip() {
     let secret_message = b"Ola Bob! Nosso escondidinho de carne seca esta pronto no quiosque.";
 
     // Alice assina e cifra para Bob
-    let encrypted =
-        sign_and_encrypt(secret_message, &alice_sec, &[&bob_pub]).expect("encryption");
+    let encrypted = sign_and_encrypt(secret_message, &alice_sec, &[&bob_pub]).expect("encryption");
     assert!(encrypted.contains("-----BEGIN PGP MESSAGE-----"));
 
     // Bob decifra e verifica a assinatura de Alice

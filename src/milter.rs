@@ -3,8 +3,7 @@ use crate::config::Config;
 use crate::crypto::public_key_to_binary;
 use crate::keystore::KeyStore;
 use crate::mime::{
-    decrypt_pgpmime_email, encrypt_email_to_pgpmime, sanitize_plain_email_anti_spoofing,
-    EmailInfo,
+    EmailInfo, decrypt_pgpmime_email, encrypt_email_to_pgpmime, sanitize_plain_email_anti_spoofing,
 };
 use pgp::composed::SignedPublicKey;
 use std::io::{Read, Write};
@@ -255,8 +254,12 @@ pub fn handle_milter_stream<S: Read + Write>(mut stream: S, processor: &EmailPro
                 };
 
                 let result = processor.process_email(&full_message);
-                eprintln!("[ishcondidim] EOB: full_len={}, add_headers={}, repl_body={}",
-                    full_message.len(), result.add_headers.len(), result.replace_body.is_some());
+                eprintln!(
+                    "[ishcondidim] EOB: full_len={}, add_headers={}, repl_body={}",
+                    full_message.len(),
+                    result.add_headers.len(),
+                    result.replace_body.is_some()
+                );
 
                 // 1. Injeta cabeçalhos (ex: Autocrypt, X-Ixcondidim-Status)
                 for (name, val) in result.add_headers {
@@ -404,7 +407,10 @@ pub fn run_milter_listener(listen: &str, processor: Arc<EmailProcessor>) -> std:
     } else {
         return Err(std::io::Error::new(
             std::io::ErrorKind::InvalidInput,
-            format!("Formato de escuta inválido: {}. Use 'unix:/caminho' ou 'inet:ip:porta'", listen),
+            format!(
+                "Formato de escuta inválido: {}. Use 'unix:/caminho' ou 'inet:ip:porta'",
+                listen
+            ),
         ));
     }
 

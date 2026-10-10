@@ -1,7 +1,7 @@
 use crate::autocrypt::AutocryptHeader;
 use crate::crypto::{
-    generate_autocrypt_keypair, public_key_from_armor, public_key_from_binary,
-    public_key_to_armor, secret_key_from_armor, secret_key_to_armor, CryptoError,
+    CryptoError, generate_autocrypt_keypair, public_key_from_armor, public_key_from_binary,
+    public_key_to_armor, secret_key_from_armor, secret_key_to_armor,
 };
 use pgp::composed::{SignedPublicKey, SignedSecretKey};
 use serde::{Deserialize, Serialize};
@@ -73,7 +73,11 @@ impl KeyStore {
     }
 
     fn sanitize_email_for_filename(email: &str) -> String {
-        email.trim().to_lowercase().replace('/', "_").replace('\\', "_")
+        email
+            .trim()
+            .to_lowercase()
+            .replace('/', "_")
+            .replace('\\', "_")
     }
 
     /// Obtém ou gera um par de chaves OpenPGP local para uma conta interna
@@ -87,10 +91,10 @@ impl KeyStore {
         let pub_path = self.keys_dir.join(format!("{}.pub", filename));
 
         if sec_path.exists() && pub_path.exists() {
-            let sec_str = fs::read_to_string(&sec_path)
-                .map_err(|e| KeyStoreError::IoError(e.to_string()))?;
-            let pub_str = fs::read_to_string(&pub_path)
-                .map_err(|e| KeyStoreError::IoError(e.to_string()))?;
+            let sec_str =
+                fs::read_to_string(&sec_path).map_err(|e| KeyStoreError::IoError(e.to_string()))?;
+            let pub_str =
+                fs::read_to_string(&pub_path).map_err(|e| KeyStoreError::IoError(e.to_string()))?;
 
             let sec_key = secret_key_from_armor(&sec_str)?;
             let pub_key = public_key_from_armor(&pub_str)?;

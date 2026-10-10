@@ -1,8 +1,7 @@
 use ishcondidim::crypto::generate_autocrypt_keypair;
 use ishcondidim::mime::{
-    build_security_banner_html, build_security_banner_text, decrypt_pgpmime_email,
+    EmailInfo, build_security_banner_html, build_security_banner_text, decrypt_pgpmime_email,
     encrypt_email_to_pgpmime, inject_autocrypt_header, sanitize_plain_email_anti_spoofing,
-    EmailInfo,
 };
 
 #[test]
@@ -50,8 +49,7 @@ Clique aqui para atualizar sua senha.";
 
 #[test]
 fn test_pgpmime_encryption_and_decryption_with_banner() {
-    let (alice_sec, alice_pub) =
-        generate_autocrypt_keypair("alice@praia.net").expect("alice keys");
+    let (alice_sec, alice_pub) = generate_autocrypt_keypair("alice@praia.net").expect("alice keys");
     let (bob_sec, bob_pub) = generate_autocrypt_keypair("bob@kiridu.net").expect("bob keys");
 
     let raw_email = b"\
@@ -66,17 +64,21 @@ Content-Type: text/plain; charset=utf-8\r\n\
 O segredo do escondidinho e a manteiga de garrafa e mandioca fresca!\r\n";
 
     // 1. Cifra em PGP/MIME
-    let pgpmime_bytes = encrypt_email_to_pgpmime(raw_email, &alice_sec, &[&bob_pub])
-        .expect("pgpmime encryption");
+    let pgpmime_bytes =
+        encrypt_email_to_pgpmime(raw_email, &alice_sec, &[&bob_pub]).expect("pgpmime encryption");
 
     let (info, _) = EmailInfo::parse(&pgpmime_bytes).expect("parse pgpmime");
     assert!(info.is_pgp_mime);
 
     // 2. Decifra pelo servidor do Bob injetando a palavra de segurança
     let secret_word = "MocotóDourado";
-    let decrypted_bytes =
-        decrypt_pgpmime_email(&pgpmime_bytes, &bob_sec, Some(&alice_pub), Some(secret_word))
-            .expect("pgpmime decryption");
+    let decrypted_bytes = decrypt_pgpmime_email(
+        &pgpmime_bytes,
+        &bob_sec,
+        Some(&alice_pub),
+        Some(secret_word),
+    )
+    .expect("pgpmime decryption");
 
     let parsed_decrypted = mail_parser::MessageParser::default()
         .parse(&decrypted_bytes)

@@ -1,4 +1,4 @@
-use ishcondidim::autocrypt::{format_autocrypt_gossip, AutocryptHeader};
+use ishcondidim::autocrypt::{AutocryptHeader, format_autocrypt_gossip};
 
 #[test]
 fn test_parse_and_format_autocrypt_header() {
