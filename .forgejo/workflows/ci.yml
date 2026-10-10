@@ -1,0 +1,41 @@
+name: "CI / CD Pipeline"
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  test:
+    name: "Rust Test & Lint"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Install Rust Toolchain"
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: "Format Check"
+        run: cargo fmt -- --check
+      - name: "Clippy (Zero Warnings)"
+        run: cargo clippy --all-targets --all-features -- -D warnings
+      - name: "Run Tests"
+        run: cargo test --all-targets --all-features
+
+  trigger-gost-ci:
+    name: "Trigger gost-ci Rebuild"
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: "Trigger gost-ci-lauda container rebuild"
+        run: |
+          if [ -n "${{ secrets.CODEBERG_TOKEN }}" ]; then
+            curl -s -X POST \
+              -H "Authorization: token ${{ secrets.CODEBERG_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              "https://codeberg.org/api/v1/repos/lumenpink/gost-ci/actions/workflows/build-images.yml/dispatches" \
+              -d '{"ref": "main"}'
+          fi
