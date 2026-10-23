@@ -89,6 +89,9 @@ O daemon utiliza a crate nativa `pgp`, dispensando `gpg`, `gpg-agent`, `libgpgme
 ### Compilação:
 ```bash
 cargo build --release
+
+# Compilação estática universal (static-pie) contra musl libc
+cargo build --release --target x86_64-unknown-linux-musl
 ```
 
 ### Execução local:
