@@ -24,18 +24,25 @@ jobs:
       - name: "Run Tests"
         run: cargo test --all-targets --all-features
 
-  trigger-gost-ci:
-    name: "Trigger gost-ci Rebuild"
+  release:
+    name: "Release Linux x86_64 Binary"
     runs-on: ubuntu-latest
     needs: [test]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) && github.event_name == 'push'
     steps:
-      - name: "Trigger gost-ci-lauda container rebuild"
-        run: |
-          if [ -n "${{ secrets.CODEBERG_TOKEN }}" ]; then
-            curl -s -X POST \
-              -H "Authorization: token ${{ secrets.CODEBERG_TOKEN }}" \
-              -H "Content-Type: application/json" \
-              "https://codeberg.org/api/v1/repos/lumenpink/gost-ci/actions/workflows/build-images.yml/dispatches" \
-              -d '{"ref": "main"}'
-          fi
+      - uses: actions/checkout@v4
+      - name: "Install Rust Toolchain"
+        uses: dtolnay/rust-toolchain@stable
+      - name: "Build Release Binary"
+        run: cargo build --release --bin ishcondidim
+      - name: "Publish Sovereign Release (latest)"
+        uses: https://github.com/softprops/action-gh-release@v2
+        with:
+          tag_name: "latest"
+          name: "Ishcondidim Latest (linux-x86_64)"
+          prerelease: false
+          files: target/release/ishcondidim
+          body: |
+            Binário soberano oficial compilado para linux-x86_64.
+            Commit: ${{ github.sha }}
+
