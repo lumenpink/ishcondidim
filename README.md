@@ -9,6 +9,18 @@
 
 ---
 
+## 📦 Binários e Releases Soberanos
+
+O binário do daemon `ishcondidim` para `linux-x86_64` é compilado automaticamente a cada push na branch principal e publicado sob a tag canônica `latest` na Gambi:
+
+```bash
+# Baixar o binário mais recente diretamente da Gambi:
+curl -sSL -o /usr/local/bin/ishcondidim https://gambi.2lp.in/lumen/ishcondidim/releases/download/latest/ishcondidim
+chmod +x /usr/local/bin/ishcondidim
+```
+
+---
+
 ## 🎯 O que é o Ishcondidim?
 
 O **Ishcondidim** (*"escondidinho"* saboroso com privacidade garantida) é um daemon de filtro Milter para servidores de e-mail **Postfix** que implementa o padrão aberto **Autocrypt Level 1** inteiramente no lado do servidor.
