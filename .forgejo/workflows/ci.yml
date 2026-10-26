@@ -35,6 +35,21 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: "Build Release Binary"
         run: cargo build --release --bin ishcondidim
+
+      - name: "Prune Previous Asset on Forgejo"
+        run: |
+          API_URL="${GITHUB_API_URL:-https://gambi.2lp.in/api/v1}"
+          REPO="${GITHUB_REPOSITORY:-lumen/ishcondidim}"
+          TOKEN="${GITHUB_TOKEN:-${{ secrets.GITHUB_TOKEN }}}"
+          REL_INFO=$(curl -s -H "Authorization: token $TOKEN" "$API_URL/repos/$REPO/releases/tags/latest" || true)
+          REL_ID=$(echo "$REL_INFO" | jq -r .id 2>/dev/null || echo "")
+          if [ -n "$REL_ID" ] && [ "$REL_ID" != "null" ]; then
+            ASSET_ID=$(echo "$REL_INFO" | jq -r '.assets[]? | select(.name=="ishcondidim") | .id' 2>/dev/null || echo "")
+            if [ -n "$ASSET_ID" ] && [ "$ASSET_ID" != "null" ]; then
+              curl -s -X DELETE -H "Authorization: token $TOKEN" "$API_URL/repos/$REPO/releases/$REL_ID/assets/$ASSET_ID" || true
+            fi
+          fi
+
       - name: "Publish Sovereign Release (latest)"
         uses: https://github.com/softprops/action-gh-release@v2
         with:
