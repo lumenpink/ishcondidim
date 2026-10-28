@@ -136,3 +136,46 @@ fn test_banca_distribution_endpoints() {
         "https://banca.2lp.in/downloads/ishcondidim/ishcondidim-0.1.0-linux-x86_64"
     );
 }
+
+#[test]
+fn test_perform_atomic_update_and_replacement() {
+    let tmp = tempdir().unwrap();
+    let target = tmp.path().join("bin").join("ishcondidim");
+
+    // 1. Criação inicial
+    let initial_bytes = b"#!/bin/sh\necho v1\n";
+    ishcondidim::update::perform_atomic_update(&target, initial_bytes).unwrap();
+    assert_eq!(std::fs::read(&target).unwrap(), initial_bytes);
+
+    // 2. Atualização atômica para v2
+    let updated_bytes = b"#!/bin/sh\necho v2\n";
+    ishcondidim::update::perform_atomic_update(&target, updated_bytes).unwrap();
+    assert_eq!(std::fs::read(&target).unwrap(), updated_bytes);
+
+    // 3. Permissões de execução no Unix
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let mode = std::fs::metadata(&target).unwrap().permissions().mode();
+        assert_eq!(mode & 0o111, 0o111);
+    }
+}
+
+#[test]
+fn test_state_cache_roundtrip() {
+    let tmp = tempdir().unwrap();
+    let state_file = tmp.path().join("state.json");
+
+    let state = ishcondidim::update::UpdateState {
+        last_check_timestamp: 1729411200,
+        latest_remote_version: "0.2.0".to_string(),
+        channel: "nightly".to_string(),
+    };
+
+    ishcondidim::update::save_update_state(&state, Some(&state_file)).unwrap();
+    let loaded = ishcondidim::update::load_update_state(Some(&state_file));
+
+    assert_eq!(loaded.last_check_timestamp, 1729411200);
+    assert_eq!(loaded.latest_remote_version, "0.2.0");
+    assert_eq!(loaded.channel, "nightly");
+}
