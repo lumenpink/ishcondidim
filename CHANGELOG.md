@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Features
+  - (updater) conformidade com padrao xdg e integracao com a banca (closes #3)
   - (ci) publicar release linux-x86_64 com tag latest na gambi (closes #5)
   - initial implementation of postfix autocrypt level 1 milter in rust
 
