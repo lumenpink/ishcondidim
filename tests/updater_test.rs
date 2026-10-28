@@ -1,7 +1,6 @@
 use ishcondidim::update::{
     get_config_path, get_distribution_endpoints, get_download_url, get_state_path,
-    is_version_pinned, load_update_config, resolve_channel, save_update_config,
-    semver_is_newer, UpdateConfig,
+    is_version_pinned, resolve_channel, save_update_config, semver_is_newer, UpdateConfig,
 };
 use std::env;
 use tempfile::tempdir;

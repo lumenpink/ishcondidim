@@ -4,3 +4,4 @@ pub mod crypto;
 pub mod keystore;
 pub mod milter;
 pub mod mime;
+pub mod update;
