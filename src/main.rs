@@ -1,8 +1,8 @@
 use ishcondidim::config::{Config, ConfigManager};
 use ishcondidim::keystore::KeyStore;
-use ishcondidim::milter::{run_milter_listener, EmailProcessor};
+use ishcondidim::milter::{EmailProcessor, run_milter_listener};
 use ishcondidim::update::{
-    cmd_check_update, cmd_config, cmd_update, run_startup_check, CURRENT_VERSION,
+    CURRENT_VERSION, cmd_check_update, cmd_config, cmd_update, run_startup_check,
 };
 use std::env;
 use std::path::PathBuf;

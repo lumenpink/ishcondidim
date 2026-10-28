@@ -136,10 +136,10 @@ pub fn load_update_config(path: Option<&Path>) -> UpdateConfig {
     if !p.exists() {
         return UpdateConfig::default();
     }
-    if let Ok(content) = fs::read_to_string(&p) {
-        if let Ok(app_cfg) = toml::from_str::<AppConfigFile>(&content) {
-            return app_cfg.update;
-        }
+    if let Ok(content) = fs::read_to_string(&p)
+        && let Ok(app_cfg) = toml::from_str::<AppConfigFile>(&content)
+    {
+        return app_cfg.update;
     }
     UpdateConfig::default()
 }
@@ -167,10 +167,10 @@ pub fn load_update_state(path: Option<&Path>) -> UpdateState {
     if !p.exists() {
         return UpdateState::default();
     }
-    if let Ok(content) = fs::read_to_string(&p) {
-        if let Ok(state) = serde_json::from_str::<UpdateState>(&content) {
-            return state;
-        }
+    if let Ok(content) = fs::read_to_string(&p)
+        && let Ok(state) = serde_json::from_str::<UpdateState>(&content)
+    {
+        return state;
     }
     UpdateState::default()
 }
@@ -272,8 +272,8 @@ pub fn semver_is_newer(remote: &str, current: &str) -> bool {
                 parts.push(n);
             }
         }
-        if main_part.contains('-') {
-            rest = main_part.splitn(2, '-').nth(1).unwrap_or("").to_string();
+        if let Some((_, r)) = main_part.split_once('-') {
+            rest = r.to_string();
         }
         (parts, rest)
     }
@@ -383,22 +383,21 @@ pub fn run_startup_check(current_version: &str) {
         if let Ok(output) = Command::new("curl")
             .args(["-sSf", "--max-time", "1", &ver_url])
             .output()
+            && output.status.success()
         {
-            if output.status.success() {
-                let remote_ver = String::from_utf8_lossy(&output.stdout).trim().to_string();
-                if !remote_ver.is_empty() {
-                    let mut new_state = state;
-                    new_state.last_check_timestamp = now;
-                    new_state.latest_remote_version = remote_ver.clone();
-                    new_state.channel = channel;
-                    let _ = save_update_state(&new_state, None);
+            let remote_ver = String::from_utf8_lossy(&output.stdout).trim().to_string();
+            if !remote_ver.is_empty() {
+                let mut new_state = state;
+                new_state.last_check_timestamp = now;
+                new_state.latest_remote_version = remote_ver.clone();
+                new_state.channel = channel;
+                let _ = save_update_state(&new_state, None);
 
-                    if semver_is_newer(&remote_ver, current_version) {
-                        eprintln!(
-                            "💡 [{}] Nova versão disponível: v{} (atual: v{}).\n   Execute '{} update' para atualizar.",
-                            APP_NAME, remote_ver, current_version, APP_NAME
-                        );
-                    }
+                if semver_is_newer(&remote_ver, current_version) {
+                    eprintln!(
+                        "💡 [{}] Nova versão disponível: v{} (atual: v{}).\n   Execute '{} update' para atualizar.",
+                        APP_NAME, remote_ver, current_version, APP_NAME
+                    );
                 }
             }
         }
@@ -435,9 +434,7 @@ pub fn cmd_check_update(channel_override: Option<&str>) -> Result<(), Box<dyn st
         .output();
 
     let remote_ver = match output {
-        Ok(out) if out.status.success() => {
-            String::from_utf8_lossy(&out.stdout).trim().to_string()
-        }
+        Ok(out) if out.status.success() => String::from_utf8_lossy(&out.stdout).trim().to_string(),
         _ => String::new(),
     };
 
@@ -502,7 +499,7 @@ pub fn cmd_update(
         return Err("Operação bloqueada por pinning de versão".into());
     }
 
-    let pin = pin_override.or_else(|| {
+    let pin = pin_override.or({
         if !cfg.pin.is_empty() {
             Some(cfg.pin.as_str())
         } else {
@@ -527,8 +524,7 @@ pub fn cmd_update(
         return Ok(());
     }
 
-    let temp_dl_path =
-        std::env::temp_dir().join(format!("{}-dl-{}", APP_NAME, std::process::id()));
+    let temp_dl_path = std::env::temp_dir().join(format!("{}-dl-{}", APP_NAME, std::process::id()));
 
     let status = Command::new("curl")
         .args(["-sSL", "-o", temp_dl_path.to_str().unwrap(), &download_url])
@@ -599,7 +595,10 @@ pub fn cmd_config(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
                 .ok_or("Uso: ishcondidim config set-auto-check <true|false>")?;
             cfg.auto_check = val.trim().parse::<bool>()?;
             save_update_config(&cfg, None)?;
-            println!("✔ Verificação automática configurada para: {}", cfg.auto_check);
+            println!(
+                "✔ Verificação automática configurada para: {}",
+                cfg.auto_check
+            );
         }
         "set-auto-update" => {
             let val = args
@@ -614,7 +613,9 @@ pub fn cmd_config(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
         }
         other => {
             eprintln!("Subcomando de configuração desconhecido: '{}'", other);
-            eprintln!("Opções válidas: show, pin, unpin, set-channel, set-auto-check, set-auto-update");
+            eprintln!(
+                "Opções válidas: show, pin, unpin, set-channel, set-auto-check, set-auto-update"
+            );
             return Err("Subcomando de config inválido".into());
         }
     }

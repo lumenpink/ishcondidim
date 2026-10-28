@@ -1,6 +1,6 @@
 use ishcondidim::update::{
-    get_config_path, get_distribution_endpoints, get_download_url, get_state_path,
-    is_version_pinned, resolve_channel, save_update_config, semver_is_newer, UpdateConfig,
+    UpdateConfig, get_config_path, get_distribution_endpoints, get_download_url, get_state_path,
+    is_version_pinned, resolve_channel, save_update_config, semver_is_newer,
 };
 use std::env;
 use tempfile::tempdir;
@@ -43,8 +43,10 @@ fn test_channel_resolution_precedence() {
     assert_eq!(resolve_channel(None, None, Some(&cfg_path)), "stable");
 
     // 2. Definido no config.toml
-    let mut cfg = UpdateConfig::default();
-    cfg.channel = "nightly".to_string();
+    let cfg = UpdateConfig {
+        channel: "nightly".to_string(),
+        ..Default::default()
+    };
     save_update_config(&cfg, Some(&cfg_path)).unwrap();
     assert_eq!(resolve_channel(None, None, Some(&cfg_path)), "nightly");
 
@@ -67,21 +69,31 @@ fn test_channel_resolution_precedence() {
 
 #[test]
 fn test_pinning_logic_and_safeguards() {
-    let mut cfg = UpdateConfig::default();
+    let cfg = UpdateConfig::default();
     assert!(!is_version_pinned(&cfg, "0.1.0"));
 
     // Pinned booleano sem pin específico: trava na versão atual
-    cfg.pinned = true;
-    assert!(is_version_pinned(&cfg, "0.1.0"));
+    let cfg_pinned = UpdateConfig {
+        pinned: true,
+        ..Default::default()
+    };
+    assert!(is_version_pinned(&cfg_pinned, "0.1.0"));
 
     // Pinned com versão específica
-    cfg.pinned = true;
-    cfg.pin = "0.0.9".to_string();
-    assert!(is_version_pinned(&cfg, "0.1.0"));
+    let cfg_pin_ver = UpdateConfig {
+        pinned: true,
+        pin: "0.0.9".to_string(),
+        ..Default::default()
+    };
+    assert!(is_version_pinned(&cfg_pin_ver, "0.1.0"));
 
     // Não pinned mas com pin preenchido
-    cfg.pinned = false;
-    assert!(is_version_pinned(&cfg, "0.1.0"));
+    let cfg_unpinned_with_pin = UpdateConfig {
+        pinned: false,
+        pin: "0.0.9".to_string(),
+        ..Default::default()
+    };
+    assert!(is_version_pinned(&cfg_unpinned_with_pin, "0.1.0"));
 }
 
 #[test]
